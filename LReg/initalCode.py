@@ -12,8 +12,8 @@ class LRegression():
     
     def __init__(self, feat,target,classOne):
         ##Identifying classone and classzero in the target vector
-        #target = np.where(target!=classOne,0,target)
-        #target = np.where(target==classOne,1,target)
+        target = np.where(target!=classOne,0,target)
+        target = np.where(target==classOne,1,target)
         feat = np.insert(feat,0,1,axis=1) ##Adding x^0
         self._features = feat
         self._weights = np.zeros(self._features[0].size)
@@ -48,7 +48,8 @@ class LRegression():
                 newW = []
                 innerC = 0
                 for w in self._weights:
-                    z = w + lRate*((corVec[counter]-self.predict(e))*e[innerC])
+                    eSum = ((corVec[counter]-self.predict(e))*e[innerC])
+                    z = w + lRate*((corVec[counter]-self.predict(e*w))*e[innerC])
                     newW.append(z)
                     innerC += 1
                 self._weights = np.array(newW)
@@ -86,13 +87,18 @@ class LRegression():
             return returnSet[0]
         
 def main():
-    df = np.array(pd.read_csv('data/test.data', sep=',',header=0))
+    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
 
-    x = LRegression(df[:,1:],df[:,:1],'Male')
+    x = LRegression(df[:,:60],df[:,60:],'R')
 
-    print(x.fit(x.featt,x.tarr,0.2))
+    print(x.fit(x.featt,x.tarr,0.3))
     
-
+    for q in x.predict(x.featt):
+        if q > 1-q:
+            print("1")
+        else:
+            print("0")
+    
     
 
     
