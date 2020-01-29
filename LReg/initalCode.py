@@ -19,14 +19,16 @@ class LRegression():
         self._targets = target
         self.tarr = self._targets.flatten()
         self.featt = self._features
+        #print(self._weights,self._targets,self._features)
 
-    def fit(self, tData, corVec, lRate): 
-        N = tData.shape[0]
-        print(self.cost(corVec,self.sig(np.dot(tData,self._weights))))
-        grad = np.dot((corVec-self.sig(np.dot(tData,self._weights))),tData) 
-        grad *= lRate
-        grad /= N
-        self._weights = np.add(self._weights,grad)
+    def fit(self, tData, corVec, lRate, itera): 
+        for x in range(itera):
+            N = tData.shape[0]
+            print(self.cost(corVec,self.sig(np.dot(tData,self._weights))))
+            grad = np.dot((corVec-self.sig(np.dot(tData,self._weights))),tData) 
+            grad *= lRate
+            grad /= N
+            self._weights = np.add(self._weights,grad)
 
 
     def predict(self,tSet):
@@ -56,25 +58,36 @@ class LRegression():
         return np.mean(pL == tL)
     
 def main():
-    
+    ########## LR FOR PERK
 #    df2 = np.array(pd.read_csv('data/parkinsons.data', sep=',',header=0))
-#    print(df2)
-    
-    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
-    print(df)
-    
-    target = df[:,60:]
-    target = np.where(target!='R',0,target)
-    target = np.where(target=='R',1,target)
-    x = LRegression(df[:,:60],target)
-    
-    x_tr, x_t, y_tr, y_t = train_test_split(x.featt, x.tarr, test_size=0.2)
+#    dff2 =np.delete(df2,0,1)
+#    dff2 = np.delete(dff2,16,1)
+#    dff3 = df2[:,17:18]
+#    dff3 = dff3.flatten()
+#    
+#    x = LRegression(dff2,dff3)
+#    
+#    x_tr, x_t, y_tr, y_t = train_test_split(x.featt, x.tarr, test_size=0.2)
+#    
+#    x.fit(x_tr,y_tr,0.0001,1000)
+#    print(x.Accu_eval(x.predict(x_t),y_t))
 
-    for i in range(1000):
-        x.fit(x_tr,y_tr,0.3)
+##### LR for sonar BOTTOM    
     
-    print(x.Accu_eval(x.predict(x_t),y_t))
-    
+#    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
+#    print(df)
+#    
+#    target = df[:,60:]
+#    target = np.where(target!='R',0,target)
+#    target = np.where(target=='R',1,target)
+#    x = LRegression(df[:,:60],target)
+#    
+#    x_tr, x_t, y_tr, y_t = train_test_split(x.featt, x.tarr, test_size=0.2)
+#
+#    x.fit(x_tr,y_tr,0.3,1000)
+#    
+#    print(x.Accu_eval(x.predict(x_t),y_t))
+#    
    
     #print(x.printW())
     
