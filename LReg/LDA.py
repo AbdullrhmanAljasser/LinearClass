@@ -49,9 +49,7 @@ class LDA():
         predResult = []
         a = np.log(self._p_one/self._p_zero)
         b = (np.dot(np.dot(self._u_one.T,np.linalg.inv(np.array(self._E,dtype=np.float32))),self._u_one)/2) # Bit weird to explain why I didnt power by -1
-        print(b)
         c = (np.dot(np.dot(self._u_zero.T,np.linalg.inv(np.array(self._E,dtype=np.float32))),self._u_zero)/2)
-        print(c)
         for x in range(features.shape[0]):
             d = np.dot(np.dot(features[x].T,np.linalg.inv(np.array(self._E,dtype=np.float32))),(self._u_one-self._u_zero))
 #            d = ((features[x].T*np.power(self._E,-1)*(self._u_one-self._u_zero)))
@@ -65,36 +63,39 @@ class LDA():
     
     def Accu_eval(self,pL,tL):
         n=tL.size
-        print(tL,pL)
         return np.mean(pL == tL)
     
 def main():
     ########## LR FOR PERK
-    df2 = np.array(pd.read_csv('data/parkinsons.data', sep=',',header=0))
-    dff2 =np.delete(df2,0,1)
-    dff2 = np.delete(dff2,16,1)
-    dff3 = df2[:,17:18]
-    dff3 = dff3.flatten()
+#    df2 = np.array(pd.read_csv('data/parkinsons.data', sep=',',header=0))
+#    dff2 =np.delete(df2,0,1)
+#    dff2 = np.delete(dff2,16,1)
+#    dff3 = df2[:,17:18]
+#    dff3 = dff3.flatten()
+#    
+#    x_tr, x_t, y_tr, y_t = train_test_split(dff2, dff3, test_size=0.2)
+#    
+#    x = LDA(x_tr,y_tr)
+#    
+#    l = x.predict(x_t)
+#    print(x.Accu_eval(l,y_t))
+
+##### LR for sonar BOTTOM    
     
-    x_tr, x_t, y_tr, y_t = train_test_split(dff2, dff3, test_size=0.2)
+    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
     
+    target = df[:,60:]
+    target = np.where(target!='R',0,target)
+    target = np.where(target=='R',1,target)
+    target = target.flatten()
+    
+    x_tr, x_t, y_tr, y_t = train_test_split(df[:,:60], target, test_size=0.2)
+#
     x = LDA(x_tr,y_tr)
     
     l = x.predict(x_t)
     print(x.Accu_eval(l,y_t))
-
-##### LR for sonar BOTTOM    
     
-#    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
-#    print(df)
-#    
-#    target = df[:,60:]
-#    target = np.where(target!='R',0,target)
-#    target = np.where(target=='R',1,target)
-#    x = LRegression(df[:,:60],target)
-#    
-#    x_tr, x_t, y_tr, y_t = train_test_split(x.featt, x.tarr, test_size=0.2)
-#
 #    x.fit(x_tr,y_tr,0.3,1000)
 #    
 #    print(x.Accu_eval(x.predict(x_t),y_t))
