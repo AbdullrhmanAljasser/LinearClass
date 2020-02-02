@@ -56,7 +56,20 @@ class LRegression():
         n=tL.size
         print(tL,pL)
         return np.mean(pL == tL)
-    
+
+class k_fold():
+    _foldSize = None
+    _returnArr = []
+    def __init__(self,data,fold=10):
+        #Expecting 2d np array
+        self._foldSize = np.floor(data.shape[0]/fold)
+        np.random.shuffle(data)
+        for x in range(fold-1): #Last fold will have an extra element
+            self._returnArr.append(data[int(self._foldSize*x):int(self._foldSize*(x+1)),:])
+        self._returnArr.append(data[int(self._foldSize*(fold-1)):int(self._foldSize*((fold-1)+1)),:])
+    def returnFolds(self):
+        return np.array(self._returnArr)
+
 def main():
     ########## LR FOR PERK
 #    df2 = np.array(pd.read_csv('data/parkinsons.data', sep=',',header=0))
@@ -64,6 +77,7 @@ def main():
 #    dff2 = np.delete(dff2,16,1)
 #    dff3 = df2[:,17:18]
 #    dff3 = dff3.flatten()
+    
 #    
 #    x = LRegression(dff2,dff3)
 #    
@@ -74,12 +88,16 @@ def main():
 
 ##### LR for sonar BOTTOM    
     
-#    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
-#    print(df)
-#    
-#    target = df[:,60:]
-#    target = np.where(target!='R',0,target)
-#    target = np.where(target=='R',1,target)
+    df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=None))
+    print(df)
+    
+    target = df[:,60:]
+    target = np.where(target!='R',0,target)
+    target = np.where(target=='R',1,target)
+    
+    s = k_fold(df)
+    #print(s.returnFolds().shape)
+    
 #    x = LRegression(df[:,:60],target)
 #    
 #    x_tr, x_t, y_tr, y_t = train_test_split(x.featt, x.tarr, test_size=0.2)

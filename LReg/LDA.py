@@ -83,7 +83,7 @@ def main():
 ##### LR for sonar BOTTOM    
     
     df = np.array(pd.read_csv('data/sonar.all-data', sep=',',header=0))
-    
+    print(df[:,-1:])
     target = df[:,60:]
     target = np.where(target!='R',0,target)
     target = np.where(target=='R',1,target)
